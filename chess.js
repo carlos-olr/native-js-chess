@@ -5,6 +5,8 @@ const ChessHandler = (function () {
     }
 
     exp.init = function () {
+        let isMobile = window.mobileCheck()
+
         let gameDIV = document.getElementsByClassName('game')[0]
 
         for (let line = 0; line <= 7; line++) {
@@ -39,15 +41,52 @@ const ChessHandler = (function () {
 
                     imgPiece.setAttribute('src', piece.src)
                     imgPiece.setAttribute('pieceColor', piece.src.indexOf('white') != -1 ? 'white' : 'black')
-                    imgPiece.setAttribute('draggable', 'true')
-                    imgPiece.setAttribute('ondragstart', 'ChessHandler.onDragStartHandler(event)')
+                    if (!isMobile) {
+                        imgPiece.setAttribute('draggable', 'true')
+                        imgPiece.setAttribute('ondragstart', 'ChessHandler.onDragStartHandler(event)')
+                    }
 
                     newPosition.appendChild(imgPiece)
                 }
 
-                newPosition.setAttribute('ondrop', 'ChessHandler.onDropHandler(event)')
-                newPosition.setAttribute('ondragover', 'ChessHandler.onDragOverHandler(event)')
+                if (isMobile) {
+                    newPosition.setAttribute('onclick', 'ChessHandler.onClickPositionHandler(event)')
+                } else {
+                    newPosition.setAttribute('ondrop', 'ChessHandler.onDropHandler(event)')
+                    newPosition.setAttribute('ondragover', 'ChessHandler.onDragOverHandler(event)')
+                }
                 gameDIV.appendChild(newPosition)
+            }
+        }
+    }
+
+    let pieceInMovemment
+    let positionPieceInMovemment
+
+    exp.onClickPositionHandler = function (event) {
+        event.preventDefault()
+
+        let targetPosition = event.target
+
+        if (pieceInMovemment) {
+            let piece = document.getElementById(pieceInMovemment)
+
+            if (targetPosition.tagName === 'IMG') {
+                if (targetPosition.getAttribute('pieceColor') != piece.getAttribute('pieceColor')) {
+                    let divPosition = targetPosition.parentElement
+                    divPosition.innerHTML = ''
+                    divPosition.appendChild(piece);
+                }
+            } else {
+                targetPosition.appendChild(piece);
+            }
+
+            pieceInMovemment = undefined
+            positionPieceInMovemment = undefined
+        } else {
+            if (targetPosition.tagName === 'IMG') {
+                pieceInMovemment = event.target.id
+                positionPieceInMovemment = event.target.parentElement
             }
         }
     }
@@ -69,18 +108,6 @@ const ChessHandler = (function () {
         } else {
             targetPosition.appendChild(piece);
         }
-
-        // let pieceAtPosition = targetPosition.getElementsByClassName('piece')
-
-        // if (pieceAtPosition) {
-        //     pieceAtPosition = pieceAtPosition[0]
-
-        //     if (pieceAtPosition.pieceColor != piece.pieceColor) {
-                
-        //     }
-        // } else {
-        //     targetPosition.appendChild(piece);
-        // }
     }
 
     exp.onDragOverHandler = function (event) {
