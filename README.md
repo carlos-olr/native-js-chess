@@ -2,6 +2,7 @@
 
 I wokeup wondering to programming someting fun ( ¯\\\_(ツ)\_/¯ ), and as I had recentemente watched Queen's Gambit series in Netflix, so I decided to create Chess game, simple, useful, prety and only with native tecnologies.
 
+![example](https://github.com/carlos-olr/native-js-chess/blob/main/ext/chess-example.png?raw=true)
 
 # Why native?
 
